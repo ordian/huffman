@@ -194,7 +194,7 @@ void encode(std::ifstream &in,
   while (!in.eof())
     { 
       unsigned char c = in.get();
-      vector<bool> x = table[c];
+      vector<bool> &x = table[c];
       vector<bool>::reverse_iterator rit;
       for(rit = x.rbegin(); rit != x.rend(); ++rit)
 	{
@@ -241,10 +241,8 @@ void decode(std::ifstream &in, std::ofstream &out, Node *root)
   
 }
 
-void clean(std::ifstream &in, std::ofstream &out, Node *root)
+void clean(Node *root)
 {
-  in.close();
-  out.close();
   destroyTree(root);
 }
 
@@ -305,7 +303,7 @@ int huffmanEncodeFile(std::ifstream &in, std::ofstream &out)
   
   encode(in, out, table);
   
-  clean(in, out, root);
+  clean(root);
   return 0;
 }
 
@@ -334,7 +332,7 @@ int huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
 
   Node *root = buildDecodeTree(symb, table);
   decode(in, out, root);
-  clean(in, out, root);
+  clean(root);
   return 0;
 }
 
