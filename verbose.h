@@ -1,7 +1,7 @@
 // verbose.h
 /* Debug mode */
 /******************/
-int const VERBOSE = 1;
+#define VERBOSE 1
 
 #include <iostream>
 #include <iomanip> /* setw() */
