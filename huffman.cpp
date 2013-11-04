@@ -158,16 +158,18 @@ void writeOverhead(Size_t                          max_length,
     }
 }
 
-
-void readOverhead(std::ifstream &in,
-                  Size_t &max_length,
-                  vector<Size_t> &numberOfCodes,
-                  vector<vector<unsigned char> > &buckets,
-                  vector<unsigned char> &symb)
+vector<vector<unsigned char> > 
+readOverhead(std::ifstream &in,
+             Size_t &max_length,
+             vector<Size_t> &numberOfCodes,
+             vector<unsigned char> &symb)
 {
   in >> max_length; 
   for (Size_t i = 1; i <= max_length; ++i)
     in >> numberOfCodes[i];
+    
+  vector<vector<unsigned char> > buckets(max_length + 1,
+					 vector<unsigned char>());
 
   in.get(); 
   for (Size_t l = 1; l <= max_length; ++l)
@@ -311,12 +313,12 @@ int huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
  
   vector<Size_t> numberOfCodes(MAX_SYMBOLS, 0);  
   Size_t max_length = 0; 
-  vector<vector<unsigned char> > buckets(max_length + 1,
-					 vector<unsigned char>());
+  
   vector<unsigned char> symb;
+  vector<vector<unsigned char> > buckets;
+  
+  buckets = readOverhead(in, max_length, numberOfCodes, symb);
  
-  readOverhead(in, max_length, numberOfCodes, buckets, symb);
-   
   vector<Size_t> startCode(MAX_SYMBOLS, 0); 
   buildStartCode(max_length, numberOfCodes, startCode);
   printStartCode(startCode, max_length);
