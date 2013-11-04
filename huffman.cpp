@@ -180,6 +180,7 @@ readOverhead(std::ifstream &in,
 	buckets[l].push_back(c);
 	symb.push_back(c);
       }  
+   return buckets;
 }
 
 void encode(std::ifstream &in,
