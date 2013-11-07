@@ -10,13 +10,15 @@ using std::priority_queue;
 /* Helper functions */
 
 void 
-readBinary(std::ifstream &in, Size_t &num)
+readBinary(std::ifstream &in, 
+           Size_t        &num)
 {
   in.read(reinterpret_cast<char *>(&num), sizeof(num));  
 }
 
 void 
-writeBinary(std::ofstream &out, Size_t &num)
+writeBinary(std::ofstream &out, 
+            Size_t        &num)
 {
   out.write(reinterpret_cast<const char *>(&num), sizeof(num));
 }
@@ -273,16 +275,13 @@ decode(std::ifstream &in,
   
 }
 
-void 
-clean(Node *root)
-{
-  destroyTree(root);
-}
 
 /* End helper functions */
 
 int 
-huffmanEncodeFile(std::ifstream &in, std::ofstream &out, Size_t size)
+huffmanEncodeFile(std::ifstream &in, 
+                  std::ofstream &out, 
+                  Size_t        size)
 {
   vector<Size_t> freq(MAX_SYMBOLS, 0);
   while (!in.fail())
@@ -336,13 +335,13 @@ huffmanEncodeFile(std::ifstream &in, std::ofstream &out, Size_t size)
   writeOverhead(max_length, numberOfCodes, buckets, out, size);
   
   encode(in, out, table);
-  
-  clean(root);
+  destroyTree(root);  
   return 0;
 }
 
 int 
-huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
+huffmanDecodeFile(std::ifstream &in, 
+                  std::ofstream &out)
 {
  
   vector<Size_t> numberOfCodes(MAX_SYMBOLS, 0);  
@@ -367,7 +366,7 @@ huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
 
   Node *root = buildDecodeTree(symb, table);
   decode(in, out, root, size);
-  clean(root);
+  destroyTree(root);
   return 0;
 }
 
