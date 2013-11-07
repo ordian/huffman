@@ -1,7 +1,10 @@
 // verbose.h
 /* Debug mode */
 /******************/
+
+#ifndef VERBOSE
 #define VERBOSE 0
+
 
 #include <iostream>
 #include <iomanip> /* setw() */
@@ -94,3 +97,5 @@ printReversedCode(vector<vector<bool> > &table)
 	  }    
     }
 }
+
+#endif /* VERBOSE */
