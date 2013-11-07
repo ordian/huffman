@@ -2,14 +2,16 @@
 #include <iostream>
 #include <string>
 
-Size_t filesize(const char* filename)
+Size_t 
+filesize(const char* filename)
 {
     std::ifstream in(filename, std::ifstream::in | std::ifstream::binary);
     in.seekg(0, std::ifstream::end);
     return in.tellg(); 
 }
 
-static void usage()
+static void 
+usage()
 {
   std::cerr << "Usage: [-c|-d] [-i <input file>] [-o <output file>]" 
 	    << std::endl
@@ -24,7 +26,8 @@ static void usage()
 	
 }
 
-int main(int argc, char** argv)
+int 
+main(int argc, char** argv)
 {
   char compress = 1;
   const char *file_in = NULL, *file_out = NULL;
