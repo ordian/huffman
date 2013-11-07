@@ -9,9 +9,22 @@ using std::priority_queue;
 
 /* Helper functions */
 
-void assignLength(Node             *root, 
-                  vector<Size_t> &length,
-                  Size_t           level)
+void 
+readBinary(std::ifstream &in, Size_t &num)
+{
+  in.read(reinterpret_cast<char *>(&num), sizeof(num));  
+}
+
+void 
+writeBinary(std::ofstream &out, Size_t &num)
+{
+  out.write(reinterpret_cast<const char *>(&num), sizeof(num));
+}
+
+void 
+assignLength(Node             *root, 
+             vector<Size_t> &length,
+             Size_t           level)
 {
   if (!root->left && !root->right)
     length[root->c] = level;
@@ -25,11 +38,12 @@ void assignLength(Node             *root,
 
 
 
-void buildTable(Size_t                          max_length,
-                vector<Size_t>                 &numberOfCodes,
-                vector<Size_t>                 &startCode,
-                vector<vector<unsigned char> > &buckets,
-                vector<vector<bool> >          &table)
+void 
+buildTable(Size_t                          max_length,
+           vector<Size_t>                 &numberOfCodes,
+           vector<Size_t>                 &startCode,
+           vector<vector<unsigned char> > &buckets,
+           vector<vector<bool> >          &table)
 {
   Size_t counter = 0;
   /* Build code from start code */
@@ -50,9 +64,10 @@ void buildTable(Size_t                          max_length,
 
 }
 
-void buildStartCode(Size_t          max_length, 
-                    vector<Size_t> &numberOfCodes,
-                    vector<Size_t> &startCode)
+void 
+buildStartCode(Size_t          max_length, 
+               vector<Size_t> &numberOfCodes,
+               vector<Size_t> &startCode)
 {
   Size_t code = 0;
   Size_t lastNumberOfCodes = 0;
@@ -67,7 +82,8 @@ void buildStartCode(Size_t          max_length,
     }
 }
 
-Node * buildEncodeTree(vector<Size_t> &freq)
+Node * 
+buildEncodeTree(vector<Size_t> &freq)
 {
   priority_queue<Node *, vector<Node *>, ByFrequency> t;
   for (int c = 0; c != MAX_SYMBOLS; ++c)
@@ -92,8 +108,9 @@ Node * buildEncodeTree(vector<Size_t> &freq)
   return t.top();
 }
 
-Node * buildDecodeTree(vector<unsigned char> &symb,
-		       vector<vector<bool> > &table)
+Node * 
+buildDecodeTree(vector<unsigned char> &symb,
+                vector<vector<bool> > &table)
 {
   Node *root = new Node;
   Node *cur = root;
@@ -130,7 +147,8 @@ Node * buildDecodeTree(vector<unsigned char> &symb,
   return root;
 }
 
-void destroyTree(Node *root)
+void 
+destroyTree(Node *root)
 {
   if (root) {
     destroyTree(root->left);
@@ -139,16 +157,18 @@ void destroyTree(Node *root)
   }
 }
 
-/* Format: max_length numberOfCodes[] chars_in_order */ 
-void writeOverhead(Size_t                          max_length,
-                   vector<Size_t>                 &numberOfCodes,
-                   vector<vector<unsigned char> > &buckets,
-                   std::ofstream                  &out)
+/* Format: filesize max_length numberOfCodes[] chars_in_order */ 
+void 
+writeOverhead(Size_t                          max_length,
+              vector<Size_t>                 &numberOfCodes,
+              vector<vector<unsigned char> > &buckets,
+              std::ofstream                  &out,
+              Size_t                          size)
 {
-  out << max_length;
+  writeBinary(out, size);
+  writeBinary(out, max_length);
   for (Size_t i = 1; i <= max_length; ++i)
-    out << " " << numberOfCodes[i];
-  out << " ";
+    writeBinary(out, numberOfCodes[i]);
   
   for (Size_t i = 1; i <= max_length; ++i)
     {
@@ -159,19 +179,20 @@ void writeOverhead(Size_t                          max_length,
 }
 
 vector<vector<unsigned char> > 
-readOverhead(std::ifstream &in,
-             Size_t &max_length,
-             vector<Size_t> &numberOfCodes,
-             vector<unsigned char> &symb)
+readOverhead(std::ifstream         &in,
+             Size_t                &max_length,
+             vector<Size_t>        &numberOfCodes,
+             vector<unsigned char> &symb,
+	     Size_t                &size)
 {
-  in >> max_length; 
+  readBinary(in, size);
+  readBinary(in, max_length);
   for (Size_t i = 1; i <= max_length; ++i)
-    in >> numberOfCodes[i];
-    
+    readBinary(in, numberOfCodes[i]);
+  
   vector<vector<unsigned char> > buckets(max_length + 1,
 					 vector<unsigned char>());
-
-  in.get(); 
+  
   for (Size_t l = 1; l <= max_length; ++l)
     for (Size_t i = 0; i != numberOfCodes[l]; ++i)
       { 
@@ -180,20 +201,22 @@ readOverhead(std::ifstream &in,
 	buckets[l].push_back(c);
 	symb.push_back(c);
       }  
+  return buckets;
 }
 
-void encode(std::ifstream &in,
-            std::ofstream &out,
-            vector<vector<bool> > &table)
+void 
+encode(std::ifstream &in,
+       std::ofstream &out,
+       vector<vector<bool> > &table)
 {
   int count = 0; 
   unsigned char  buf = 0;
   in.clear(); 
   in.seekg(0);
-  while (!in.eof())
+  while (!in.fail())
     { 
       unsigned char c = in.get();
-      vector<bool> x = table[c];
+      vector<bool> &x = table[c];
       vector<bool>::reverse_iterator rit;
       for(rit = x.rbegin(); rit != x.rend(); ++rit)
 	{
@@ -202,22 +225,32 @@ void encode(std::ifstream &in,
 	  if (count == CHAR_BITS) /* it's time to write */
 	    { 
 	      count = 0;   
-	      out << buf;
+	      out.put(buf);
 	      buf = 0; 
 	    } 
 	}
     }
+  if (count) /* incomplete byte */
+    out.put(buf);
 }
 
-void decode(std::ifstream &in, std::ofstream &out, Node *root)
+void 
+decode(std::ifstream &in, 
+       std::ofstream &out, 
+       Node          *root, 
+       Size_t        size)
 {
   Node *p = root;
   int count = 0; 
+  Size_t filesize = 0;
   unsigned char byte; 
   byte = in.get();
   
-  while (!in.eof())
+  while (!in.fail())
     {   
+      if (filesize == size)
+	break;
+
       bool b = byte & (1 << (CHAR_BITS - 1 - count)); 
       if (b) 
 	p = p->right; 
@@ -226,8 +259,8 @@ void decode(std::ifstream &in, std::ofstream &out, Node *root)
       
       if (!p->left && !p->right) 
 	{
-	  if ((int) p->c != 255) /* EOF */
-	    out.put(p->c); 
+	  out.put(p->c); 
+	  ++filesize;
 	  p = root;
 	}
       ++count;
@@ -240,19 +273,19 @@ void decode(std::ifstream &in, std::ofstream &out, Node *root)
   
 }
 
-void clean(std::ifstream &in, std::ofstream &out, Node *root)
+void 
+clean(std::ifstream &in, std::ofstream &out, Node *root)
 {
-  in.close();
-  out.close();
   destroyTree(root);
 }
 
 /* End helper functions */
 
-int huffmanEncodeFile(std::ifstream &in, std::ofstream &out)
+int 
+huffmanEncodeFile(std::ifstream &in, std::ofstream &out, Size_t size)
 {
   vector<Size_t> freq(MAX_SYMBOLS, 0);
-  while (!in.eof())
+  while (!in.fail())
     { 
       unsigned char c = in.get();
       ++freq[c];
@@ -300,7 +333,7 @@ int huffmanEncodeFile(std::ifstream &in, std::ofstream &out)
 	     table);
   printReversedCode(table);
 
-  writeOverhead(max_length, numberOfCodes, buckets, out);
+  writeOverhead(max_length, numberOfCodes, buckets, out, size);
   
   encode(in, out, table);
   
@@ -308,17 +341,18 @@ int huffmanEncodeFile(std::ifstream &in, std::ofstream &out)
   return 0;
 }
 
-int huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
+int 
+huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
 {
  
   vector<Size_t> numberOfCodes(MAX_SYMBOLS, 0);  
   Size_t max_length = 0; 
-  
   vector<unsigned char> symb;
-  vector<vector<unsigned char> > buckets;
+  Size_t size = 0;
   
-  buckets = readOverhead(in, max_length, numberOfCodes, symb);
- 
+  vector<vector<unsigned char> > buckets;
+  buckets = readOverhead(in, max_length, numberOfCodes, symb, size);
+
   vector<Size_t> startCode(MAX_SYMBOLS, 0); 
   buildStartCode(max_length, numberOfCodes, startCode);
   printStartCode(startCode, max_length);
@@ -332,7 +366,7 @@ int huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
   printReversedCode(table);
 
   Node *root = buildDecodeTree(symb, table);
-  decode(in, out, root);
+  decode(in, out, root, size);
   clean(in, out, root);
   return 0;
 }

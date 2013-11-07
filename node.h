@@ -1,6 +1,7 @@
 #ifndef NODE_H_
 #define NODE_H_
 
+#include <cstddef> /* NULL */
 #include <limits>
 #include <vector>
 using std::vector; 

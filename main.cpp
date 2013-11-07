@@ -1,7 +1,13 @@
 #include "huffman.h"
-
 #include <iostream>
 #include <string>
+
+Size_t filesize(const char* filename)
+{
+    std::ifstream in(filename, std::ifstream::in | std::ifstream::binary);
+    in.seekg(0, std::ifstream::end);
+    return in.tellg(); 
+}
 
 static void usage()
 {
@@ -50,13 +56,12 @@ int main(int argc, char** argv)
 	   
     }
 
+  Size_t size = filesize(file_in);
+  
   if (file_in)
     {
-      //      if (!compress)
-	in.open(file_in, std::ios::in | std::ios::binary);
-	//else
-	//in.open(file_in);
-
+      in.open(file_in, std::ios::in | std::ios::binary);
+      
       if (!in)
 	{
 	  std::cerr << "Can't open input file " 
@@ -78,7 +83,9 @@ int main(int argc, char** argv)
 	  return 1;
 	}
     }
+  
+  
 
   return compress ?
-    huffmanEncodeFile(in, out) : huffmanDecodeFile(in, out);
+    huffmanEncodeFile(in, out, size) : huffmanDecodeFile(in, out);
 }
