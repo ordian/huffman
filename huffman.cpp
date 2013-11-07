@@ -274,7 +274,7 @@ decode(std::ifstream &in,
 }
 
 void 
-clean(std::ifstream &in, std::ofstream &out, Node *root)
+clean(Node *root)
 {
   destroyTree(root);
 }
@@ -337,7 +337,7 @@ huffmanEncodeFile(std::ifstream &in, std::ofstream &out, Size_t size)
   
   encode(in, out, table);
   
-  clean(in, out, root);
+  clean(root);
   return 0;
 }
 
@@ -367,7 +367,7 @@ huffmanDecodeFile(std::ifstream &in, std::ofstream &out)
 
   Node *root = buildDecodeTree(symb, table);
   decode(in, out, root, size);
-  clean(in, out, root);
+  clean(root);
   return 0;
 }
 

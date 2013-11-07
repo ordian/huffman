@@ -12,7 +12,9 @@ using std::endl;
 
 #include "node.h"
 
-void printTree(Node * curr, int level) 
+void 
+printTree(Node * curr, 
+          int   level) 
 {
   if (VERBOSE)
   if (curr)
@@ -30,7 +32,8 @@ void printTree(Node * curr, int level)
     }
 }
 
-void printCodeLength(vector<Size_t> &length)
+void 
+printCodeLength(vector<Size_t> &length)
 {
   if (VERBOSE)
     {
@@ -44,7 +47,8 @@ void printCodeLength(vector<Size_t> &length)
     }
 } 
 
-void printFrequences(vector<Size_t> &freq)
+void 
+printFrequences(vector<Size_t> &freq)
 {
   if (VERBOSE)
     {
@@ -58,7 +62,9 @@ void printFrequences(vector<Size_t> &freq)
     }
 }
 
-void printStartCode(vector<Size_t> &startCode, Size_t max_length)
+void 
+printStartCode(vector<Size_t> &startCode, 
+              Size_t          max_length)
 {
   if (VERBOSE)
     {
@@ -71,7 +77,8 @@ void printStartCode(vector<Size_t> &startCode, Size_t max_length)
     }
 }
 
-void printReversedCode(vector<vector<bool> > &table)
+void 
+printReversedCode(vector<vector<bool> > &table)
 {
   if (VERBOSE)
     {
