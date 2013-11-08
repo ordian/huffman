@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall -Werror -pedantic -O3
+CFLAGS=-c -Wall -Werror -O2 -pedantic
 SOURCES=main.cpp huffman.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=arj
