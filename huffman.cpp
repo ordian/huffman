@@ -226,7 +226,7 @@ encode(std::ifstream         &in,
   in.clear(); 
   in.seekg(0);
 
-  while (!in.fail())
+  while (!!in)
     { 
       BYTE c = in.get();
       vector<bool>::reverse_iterator rit;
@@ -258,7 +258,7 @@ decode(std::ifstream &in,
   BYTE byte; 
   byte = in.get();
   
-  while (!in.fail())
+  while (!!in)
     {   
       if (filesize == size)
 	break;
@@ -294,7 +294,7 @@ huffmanEncodeFile(std::ifstream &in,
                   Size_t        size)
 {
   vector<Size_t> freq(MAX_SYMBOLS, 0);
-  while (!in.fail())
+  while (!!in)
     { 
       BYTE c = in.get();
       ++freq[c];
