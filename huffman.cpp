@@ -1,6 +1,7 @@
 #include <queue>
 #include <algorithm> /* std::sort */
 #include <fstream>
+#include <cassert>
 #include "node.h"
 #include "verbose.h"
 
@@ -24,12 +25,14 @@ readBinary(std::ifstream &in,
 
 void 
 writeBinary(std::ofstream &out, 
-            Size_t        &num)
+            Size_t         num)
 {
-  out.put(static_cast<BYTE>( num >> 24)       );
-  out.put(static_cast<BYTE>((num >> 16) % 256));
-  out.put(static_cast<BYTE>((num >>  8) % 256));
-  out.put(static_cast<BYTE>( num        % 256));
+  assert(num <= 4294967295); /* 2^32 - 1 */
+  
+  for(int k = 3; k != -1; --k)
+    {
+      out.put(static_cast<BYTE>((num >> (8 * k))  % 256));
+    }
 }
 
 void 
@@ -221,8 +224,8 @@ encode(std::ifstream         &in,
   BYTE count = 0; 
   BYTE buf   = 0;
   in.clear(); 
-  in.seekg(0)
-;
+  in.seekg(0);
+
   while (!in.fail())
     { 
       BYTE c = in.get();
@@ -285,7 +288,7 @@ decode(std::ifstream &in,
 
 /* End helper functions */
 
-int 
+void 
 huffmanEncodeFile(std::ifstream &in, 
                   std::ofstream &out, 
                   Size_t        size)
@@ -343,10 +346,9 @@ huffmanEncodeFile(std::ifstream &in,
   
   encode(in, out, table);
   destroyTree(root);  
-  return 0;
 }
 
-int 
+void
 huffmanDecodeFile(std::ifstream &in, 
                   std::ofstream &out)
 { 
@@ -373,7 +375,6 @@ huffmanDecodeFile(std::ifstream &in,
   Node const *root = buildDecodeTree(symb, table);
   decode(in, out, root, size);
   destroyTree(root);
-  return 0;
 }
 
 

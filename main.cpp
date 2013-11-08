@@ -91,8 +91,8 @@ main(int    argc,
 	}
     }
   
-  
-
-  return compress ?
+  compress ?
     huffmanEncodeFile(in, out, size) : huffmanDecodeFile(in, out);
+
+  return 0;
 }

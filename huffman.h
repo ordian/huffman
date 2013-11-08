@@ -4,11 +4,11 @@
 #include "node.h"
 #include <fstream>
 
-int 
+void 
 huffmanEncodeFile(std::ifstream& in, 
                   std::ofstream& out, 
                   Size_t size);
-int 
+void 
 huffmanDecodeFile(std::ifstream& in, 
                   std::ofstream& out);
 
