@@ -19,15 +19,16 @@ usage()
 	    << std::endl
 	    << "-o - output file"
 	    << std::endl
-	    << "-d - decompress\n"
+	    << "-d - decompress"
 	    << std::endl
-	    << "-c - compress (default)\n"
+	    << "-c - compress (default)"
 	    << std::endl;
 	
 }
 
 int 
-main(int argc, char** argv)
+main(int    argc, 
+     char** argv)
 {
   char compress = 1;
   const char *file_in = NULL, *file_out = NULL;
@@ -41,7 +42,10 @@ main(int argc, char** argv)
     }
 
   /* Get the command line arguments. */
-  std::string i = "-i", o = "-o", c = "-c", d = "-d";
+  std::string i = "-i", 
+              o = "-o", 
+              c = "-c", 
+              d = "-d";
   for (int j = 1; j < argc; ++j)
     {
       std::string s(argv[j]);

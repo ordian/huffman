@@ -4,15 +4,17 @@
 #include <cstddef> /* NULL */
 #include <limits>
 #include <vector>
+
 using std::vector; 
 
-typedef unsigned int Size_t;
+typedef unsigned long int  Size_t;
+typedef unsigned char      BYTE;
 
 int const MAX_SYMBOLS = 
-  1 + std::numeric_limits<unsigned char>::max();
+  1 + std::numeric_limits<BYTE>::max();
 
 int const CHAR_BITS = 
-  std::numeric_limits<unsigned char>::digits;
+  std::numeric_limits<BYTE>::digits;
 
 
 
@@ -20,10 +22,10 @@ class Node
 {
 public:
   Size_t frequency;
-  unsigned char  c;
+  BYTE  c;
   Node *left, *right;
   
-  Node(Size_t f, unsigned char ch)
+  Node(Size_t f, BYTE ch)
     : frequency(f)
     , c(ch)
     , left(NULL)

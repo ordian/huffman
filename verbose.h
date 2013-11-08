@@ -3,7 +3,7 @@
 /******************/
 
 #ifndef VERBOSE
-#define VERBOSE 0
+#define VERBOSE 1
 
 
 #include <iostream>
@@ -16,8 +16,8 @@ using std::endl;
 #include "node.h"
 
 void 
-printTree(Node * curr, 
-          int   level) 
+printTree(Node const * curr, 
+          int         level) 
 {
   if (VERBOSE)
   if (curr)
@@ -36,7 +36,7 @@ printTree(Node * curr,
 }
 
 void 
-printCodeLength(vector<Size_t> &length)
+printCodeLength(vector<BYTE> &length)
 {
   if (VERBOSE)
     {
@@ -66,8 +66,8 @@ printFrequences(vector<Size_t> &freq)
 }
 
 void 
-printStartCode(vector<Size_t> &startCode, 
-              Size_t          max_length)
+printStartCode(vector<BYTE> &startCode, 
+               BYTE          max_length)
 {
   if (VERBOSE)
     {
